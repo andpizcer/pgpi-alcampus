@@ -428,8 +428,8 @@ p:last-child {
 }
 
 .brand-wrap .logo, .navbar-brand .logo {
-  margin-right: 7px;
-  max-height: 42px;
+  margin-right: 200px;
+  max-height: 100px;
   display: inline-block;
 }
 
@@ -1060,7 +1060,7 @@ a[class*=card]:hover .title {
 
 .price {
   font-weight: 600;
-  color: #212529;
+  color: #56b280;
 }
 
 .price-old {
