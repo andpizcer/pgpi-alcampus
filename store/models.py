@@ -7,6 +7,8 @@ from django.db.models import Avg, Count
 from django.db.models.signals import post_save
 from django.core.mail import send_mail
 from django.conf import settings
+from django.db import models
+from django.contrib.auth.models import User
 
 
 
@@ -89,19 +91,19 @@ class Variation(models.Model):
         return self.variation_category + ' : ' + self.variation_value
 
 
-class ReviewRating(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    user = models.ForeignKey(Account, on_delete=models.CASCADE)
-    subject = models.CharField(max_length=100, blank=True)
-    review = models.CharField(max_length=500, blank=True)
-    rating = models.FloatField()
-    ip = models.CharField(max_length=20, blank=True)
-    status = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+class Review(models.Model):
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='reviews')  
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  
+    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])  # Calificación de 1 a 5
+    comment = models.TextField(blank=True, null=True)  # Comentario opcional
+    created_at = models.DateTimeField(auto_now_add=True)  # Fecha y hora de creación
 
     def __str__(self):
-        return self.subject
+        return f"{self.rating} estrellas por {self.user.username} para {self.product.name}"
+
+    class Meta:
+        ordering = ['-created_at']   
+        unique_together = ('product', 'user') 
 
 
 class ProductGallery(models.Model):
