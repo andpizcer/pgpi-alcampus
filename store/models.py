@@ -24,6 +24,11 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
+    brand = models.CharField(max_length=100, blank=True, null=True)
+    power = models.CharField(max_length=50, blank=True, null=True)  # Ejemplo: "800W"
+    dimensions = models.CharField(max_length=100, blank=True, null=True)  # Ejemplo: "60x40x80 cm"
+    energy_rating = models.CharField(max_length=10, blank=True, null=True)  # Ejemplo: "A++"
+
 
 
     def get_url(self):
