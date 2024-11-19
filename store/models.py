@@ -1,8 +1,13 @@
+from itertools import product
 from django.db import models
 from category.models import Category
 from django.urls import reverse
 from accounts.models import Account
 from django.db.models import Avg, Count
+from django.db.models.signals import post_save
+from django.core.mail import send_mail
+from django.conf import settings
+
 
 
 # Create your models here.
@@ -39,6 +44,22 @@ class Product(models.Model):
         if reviews['count'] is not None:
             count = int(reviews['count'])
         return count
+    
+    def is_stock_low(self):
+        return self.stock < 10 
+    
+    def notify_low_stock(sender, instance, **kwargs):
+     if instance.is_stock_low():
+        send_mail(
+            'Alerta de Stock Bajo',
+            f'El producto {instance.name} tiene un stock de {instance.stock}.',
+            settings.DEFAULT_FROM_EMAIL,
+            [settings.ADMIN_EMAIL],
+            fail_silently=False,
+        )
+
+    post_save.connect(notify_low_stock, sender=product)
+
 
 
 class VariationManager(models.Manager):
