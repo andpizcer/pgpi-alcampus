@@ -8,6 +8,8 @@ from django.db.models import Q
 from .forms import ReviewForm
 from django.contrib import messages
 from orders.models import OrderProduct
+from django.shortcuts import render
+from .models import Product
 
 
 # Create your views here.
@@ -106,3 +108,27 @@ def submit_review(request, product_id):
                 data.save()
                 messages.success(request, 'Muchas gracias!, tu comentario ha sido publicado.')
                 return redirect(url)
+            
+def product_list(request):
+    products = Product.objects.all()
+    
+    # Filtrado
+    category = request.GET.get('category')
+    if category:
+        products = products.filter(category__name=category)
+
+    price_min = request.GET.get('price_min')
+    price_max = request.GET.get('price_max')
+    if price_min and price_max:
+        products = products.filter(price__gte=price_min, price__lte=price_max)
+
+    brand = request.GET.get('brand')
+    if brand:
+        products = products.filter(brand__iexact=brand)
+    
+    energy_rating = request.GET.get('energy_rating')
+    if energy_rating:
+        products = products.filter(energy_rating=energy_rating)
+
+    return render(request, 'store/product_list.html', {'products': products})
+
