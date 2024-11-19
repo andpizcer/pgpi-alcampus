@@ -543,6 +543,43 @@ pre code {
   margin-right: auto;
   margin-left: auto;
 }
+
+.footer-container {
+  width: 100%;
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-right: auto;
+  margin-left: auto;
+  background-color: var(--gray-dark);
+}
+
+.hero {
+  height: 75vh;
+  background-image: url('/static/images/banners/background.png');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.hero-card {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1.5rem;
+  border-radius: 5px;
+  text-align: center;
+  max-width: 600px;
+  margin: 2.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.hero-logo {
+  max-width: auto;
+  height: 110px;
+  margin-bottom: 0rem;
+}
+
 @media (min-width: 576px) {
   .container {
     max-width: 540px;
@@ -4009,12 +4046,12 @@ input[type=button].btn-block {
 }
 
 .navbar {
-  position: relative;
+  position: absolute;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5rem 1rem;
+  padding: 0rem 0rem;
 }
 .navbar > .container,
 .navbar > .container-fluid {
@@ -4599,7 +4636,7 @@ input[type=button].btn-block {
 }
 .page-link:hover {
   z-index: 2;
-  color: #b93636;
+  color: #fff;
   text-decoration: none;
   background-color: #b93636;
   border-color: #b93636;
@@ -4621,7 +4658,7 @@ input[type=button].btn-block {
 }
 .page-item.active .page-link {
   z-index: 1;
-  color: #b93636;
+  color: #fff;
   background-color: #b93636;
   border-color: #b93636;
 }
@@ -4692,9 +4729,9 @@ a.badge:hover, a.badge:focus {
 }
 
 .badge-pill {
-  padding-right: 0.6em;
-  padding-left: 0.6em;
-  border-radius: 10rem;
+  padding-right: 0.3em;
+  padding-left: 0.3em;
+  border-radius: 2rem;
 }
 
 .badge-primary {
@@ -6258,7 +6295,7 @@ button.bg-dark:focus {
 }
 
 .bg-primary-light {
-  background-color: #5f89f0 !important;
+  background-color: #b93636 !important;
 }
 
 a.bg-primary-light:hover, a.bg-primary-light:focus,

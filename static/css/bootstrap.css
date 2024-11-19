@@ -6258,17 +6258,17 @@ button.bg-dark:focus {
 }
 
 .bg-primary-light {
-  background-color: #5f89f0 !important;
+  background-color: gray !important;
 }
 
 a.bg-primary-light:hover, a.bg-primary-light:focus,
 button.bg-primary-light:hover,
 button.bg-primary-light:focus {
-  background-color: #b93636 !important;
+  background-color: gray !important;
 }
 
 .bg-gray {
-  background-color: #545454 !important;
+  background-color: gray !important;
 }
 
 a.bg-gray:hover, a.bg-gray:focus,

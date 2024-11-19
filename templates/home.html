@@ -3,13 +3,13 @@
 
 {% block content %}
 <!-- ========================= SECTION MAIN ========================= -->
-<section class="section-intro padding-y-sm">
-<div class="container">
-
-<div class="intro-banner-wrap">
-	<img src="{% static 'images/banners/descuentos.jpg' %}" class="img-fluid rounded">
-</div>
-
+<section class="section-intro">
+<div class="hero">
+	<div class="hero-card">
+		<img src="{% static 'images/alcampus.png' %}" class="hero-logo">
+		<p style="font-size: 15px;" class="pt-2">Encuentra los mejores electrodomésticos de calidad, con envíos rápidos y pagos seguros, todo desde la comodidad de tu hogar.</p>
+		<a href="{% url 'store' %}" class="btn btn-success">Descubre nuestros productos</a>
+	</div>
 </div> <!-- container //  -->
 </section>
 <!-- ========================= SECTION MAIN END// ========================= -->
@@ -55,8 +55,8 @@
  <!-- ========================= SECTION TESTIMONIALS ========================= -->
 <section class="padding-y bg">
 	<div class="container">
-		<header class="section-heading">
-			<h2 class="section-title">Lo que dicen nuestros clientes</h2>
+		<header class="section-heading" style="text-align: center;">
+			<h2 class="section-title">Opiniones de algunos de nuestros clientes</h2>
 		</header>
 	
 		<div class="row">
@@ -64,8 +64,8 @@
 				<article class="card">
 					<div class="card-body">
 						<div class="icontext mb-3">
-							<span class="icon icon-sm rounded-circle bg-primary-light">
-								<i class="fa fa-user text-primary"></i>
+							<span class="icon icon-sm rounded-circle bg-primary">
+								<i class="fa fa-user text-white"></i>
 							</span>
 							<div class="text">
 								<h6 class="mb-0">María García</h6>
@@ -80,8 +80,8 @@
 				<article class="card">
 					<div class="card-body">
 						<div class="icontext mb-3">
-							<span class="icon icon-sm rounded-circle bg-primary-light">
-								<i class="fa fa-user text-primary"></i>
+							<span class="icon icon-sm rounded-circle bg-primary">
+								<i class="fa fa-user text-white"></i>
 							</span>
 							<div class="text">
 								<h6 class="mb-0">Juan Rodríguez</h6>
@@ -96,8 +96,8 @@
 				<article class="card">
 					<div class="card-body">
 						<div class="icontext mb-3">
-							<span class="icon icon-sm rounded-circle bg-primary-light">
-								<i class="fa fa-user text-primary"></i>
+							<span class="icon icon-sm rounded-circle bg-primary">
+								<i class="fa fa-user text-white"></i>
 							</span>
 							<div class="text">
 								<h6 class="mb-0">Ana Martínez</h6>

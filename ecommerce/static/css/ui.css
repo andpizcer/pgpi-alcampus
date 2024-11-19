@@ -91,8 +91,13 @@ a:hover {
 }
 
 .img-md {
-  width: 140px;
-  height: 140px;
+  width: 180px;
+  height: 180px;
+}
+
+.img-bg {
+  width: 200px;
+  height: 200px;
 }
 
 .img-lg {
@@ -423,14 +428,14 @@ p:last-child {
 
 .header-main {
   position: relative;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  padding-top: 0rem;
+  padding-bottom: 0rem;
 }
 
 .brand-wrap .logo, .navbar-brand .logo {
-  margin-right: 200px;
-  max-height: 100px;
+  max-height: 45px;
   display: inline-block;
+  justify-content: flex-start;
 }
 
 .navbar-main .nav-link {
@@ -488,17 +493,17 @@ p:last-child {
 .section-footer .title {
   font-weight: 600;
   margin-bottom: 16px;
-  color: #212529;
+  color: #fff;
 }
 
 .footer-bottom {
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding-top: 40px;
+  padding-bottom: 40px;
 }
 
 .footer-copyright {
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding-top: 40px;
+  padding-bottom: 40px;
 }
 
 /* ================== COMPONENTS =================== */
