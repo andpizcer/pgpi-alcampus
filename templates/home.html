@@ -1,59 +1,107 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block content %}
 <!-- ========================= SECTION MAIN ========================= -->
-<section class="section-intro padding-y-sm">
-<div class="container">
-
-<div class="intro-banner-wrap">
-	<img src="{% static 'images/banners/banner03.jpeg' %}" class="img-fluid rounded">
-</div>
-
-</div> <!-- container //  -->
+<section class="section-intro">
+	<div class="hero">
+		<div class="hero-card">
+			<img src="{% static 'images/alcampus.png' %}" class="hero-logo">
+			<p style="font-size: 15px;" class="pt-2">Encuentra los mejores electrodomésticos de calidad, con envíos
+				rápidos y pagos seguros, todo desde la comodidad de tu hogar.</p>
+			<a href="{% url 'store' %}" class="btn btn-success">Descubre nuestros productos</a>
+		</div>
+	</div> <!-- container //  -->
 </section>
 <!-- ========================= SECTION MAIN END// ========================= -->
-
 <!-- ========================= SECTION  ========================= -->
 <section class="section-name padding-y-sm">
-<div class="container">
+	<div class="container">
 
-<header class="section-heading">
-	<a href="{% url 'store' %}" class="btn btn-outline-primary float-right">Ver Todo</a>
-	<h3 class="section-title">Los más vendidos</h3>
-</header><!-- sect-heading -->
+		<header class="section-heading">
+			<a href="{% url 'store' %}" class="btn btn-outline-primary float-right">Ver Todo</a>
+			<h3 class="section-title">Los más vendidos</h3>
+		</header><!-- sect-heading -->
 
 
-<div class="row">
+		<div class="row">
 
-	{% for product in products %}
-	<div class="col-md-3">
-		<div class="card card-product-grid">
-			<a href="{{ product.get_url }}" class="img-wrap"> <img src="{{ product.images.url }}"> </a>
-			<figcaption class="info-wrap">
-				<a href="{{ product.get_url }}" class="title">{{product.product_name}}</a>
-				<div class="price mt-1">{{ product.price }}</div> <!-- price-wrap.// -->
-
-				<div class="rating-star">
-					<span>
-						<i class="fa fa-star{% if product.averageReview < 0.5 %}-o{% elif product.averageReview >= 0.5 and product.averageReview < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
-						<i class="fa fa-star{% if product.averageReview < 1.5 %}-o{% elif product.averageReview >= 1.5 and product.averageReview < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
-						<i class="fa fa-star{% if product.averageReview < 2.5 %}-o{% elif product.averageReview >= 2.5 and product.averageReview < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
-						<i class="fa fa-star{% if product.averageReview < 3.5 %}-o{% elif product.averageReview >= 3.5 and product.averageReview < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
-						<i class="fa fa-star{% if product.averageReview < 4.5 %}-o{% elif product.averageReview >= 4.5 and product.averageReview < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
-					</span>
+			{% for product in products %}
+			<div class="col-md-3">
+				<div class="card card-product-grid">
+					<a href="{{ product.get_url }}" class="img-wrap"> <img src="{{ product.images.url }}"> </a>
+					<figcaption class="info-wrap">
+						<a href="{{ product.get_url }}" class="title">{{product.product_name}}</a>
+						<div class="price mt-1">{{ product.price }}</div> <!-- price-wrap.// -->
+					</figcaption>
 				</div>
-
-			</figcaption>
+			</div> <!-- col.// -->
+			{% endfor %}
 		</div>
-	</div> <!-- col.// -->
-	{% endfor %}
-</div>
-</div><!-- container // -->
+	</div><!-- container // -->
 </section>
 <!-- ========================= SECTION  END// ========================= -->
+<!-- ========================= SECTION TESTIMONIALS ========================= -->
+<section class="padding-y bg">
+	<div class="container">
+		<header class="section-heading" style="text-align: center;">
+			<h2 class="section-title">Opiniones de algunos de nuestros clientes</h2>
+		</header>
 
+		<div class="row">
+			<div class="col-md-4 mb-3">
+				<article class="card">
+					<div class="card-body">
+						<div class="icontext mb-3">
+							<span class="icon icon-sm rounded-circle bg-primary">
+								<i class="fa fa-user text-white"></i>
+							</span>
+							<div class="text">
+								<h6 class="mb-0">María García</h6>
+								<small class="text-muted">Cliente Satisfecha</small>
+							</div>
+						</div>
+						<p>Increíble servicio y productos de alta calidad. ¡Definitivamente volveré a comprar aquí!</p>
+					</div>
+				</article>
+			</div>
+			<div class="col-md-4 mb-3">
+				<article class="card">
+					<div class="card-body">
+						<div class="icontext mb-3">
+							<span class="icon icon-sm rounded-circle bg-primary">
+								<i class="fa fa-user text-white"></i>
+							</span>
+							<div class="text">
+								<h6 class="mb-0">Juan Rodríguez</h6>
+								<small class="text-muted">Cliente Frecuente</small>
+							</div>
+						</div>
+						<p>La atención al cliente es excepcional. Siempre encuentro lo que necesito en esta tienda.</p>
+					</div>
+				</article>
+			</div>
+			<div class="col-md-4 mb-3">
+				<article class="card">
+					<div class="card-body">
+						<div class="icontext mb-3">
+							<span class="icon icon-sm rounded-circle bg-primary">
+								<i class="fa fa-user text-white"></i>
+							</span>
+							<div class="text">
+								<h6 class="mb-0">Ana Martínez</h6>
+								<small class="text-muted">Compradora Entusiasta</small>
+							</div>
+						</div>
+						<p>Los precios son competitivos y la variedad de productos es impresionante. ¡Muy recomendado!
+						</p>
+					</div>
+				</article>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- ========================= SECTION TESTIMONIALS END// ========================= -->
 </body>
-</html>
 
+</html>
 {% endblock %}
