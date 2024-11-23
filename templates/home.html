@@ -1,53 +1,52 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block content %}
 <!-- ========================= SECTION MAIN ========================= -->
 <section class="section-intro">
-<div class="hero">
-	<div class="hero-card">
-		<img src="{% static 'images/alcampus.png' %}" class="hero-logo">
-		<p style="font-size: 15px;" class="pt-2">Encuentra los mejores electrodomésticos de calidad, con envíos rápidos y pagos seguros, todo desde la comodidad de tu hogar.</p>
-		<a href="{% url 'store' %}" class="btn btn-success">Descubre nuestros productos</a>
-	</div>
-</div> <!-- container //  -->
+	<div class="hero">
+		<div class="hero-card">
+			<img src="{% static 'images/alcampus.png' %}" class="hero-logo">
+			<p style="font-size: 15px;" class="pt-2">Encuentra los mejores electrodomésticos de calidad, con envíos
+				rápidos y pagos seguros, todo desde la comodidad de tu hogar.</p>
+			<a href="{% url 'store' %}" class="btn btn-success">Descubre nuestros productos</a>
+		</div>
+	</div> <!-- container //  -->
 </section>
 <!-- ========================= SECTION MAIN END// ========================= -->
-
 <!-- ========================= SECTION  ========================= -->
 <section class="section-name padding-y-sm">
-<div class="container">
+	<div class="container">
 
-<header class="section-heading">
-	<a href="{% url 'store' %}" class="btn btn-outline-primary float-right">Ver Todo</a>
-	<h3 class="section-title">Los más vendidos</h3>
-</header><!-- sect-heading -->
+		<header class="section-heading">
+			<a href="{% url 'store' %}" class="btn btn-outline-primary float-right">Ver Todo</a>
+			<h3 class="section-title">Los más vendidos</h3>
+		</header><!-- sect-heading -->
 
 
-<div class="row">
+		<div class="row">
 
-	{% for product in products %}
-	<div class="col-md-3">
-		<div class="card card-product-grid">
-			<a href="{{ product.get_url }}" class="img-wrap"> <img src="{{ product.images.url }}"> </a>
-			<figcaption class="info-wrap">
-				<a href="{{ product.get_url }}" class="title">{{product.product_name}}</a>
-				<div class="price mt-1">{{ product.price }}</div> <!-- price-wrap.// -->
-			</figcaption>
+			{% for product in products %}
+			<div class="col-md-3">
+				<div class="card card-product-grid">
+					<a href="{{ product.get_url }}" class="img-wrap"> <img src="{{ product.images.url }}"> </a>
+					<figcaption class="info-wrap">
+						<a href="{{ product.get_url }}" class="title">{{product.product_name}}</a>
+						<div class="price mt-1">{{ product.price }}</div> <!-- price-wrap.// -->
+					</figcaption>
+				</div>
+			</div> <!-- col.// -->
+			{% endfor %}
 		</div>
-	</div> <!-- col.// -->
-	{% endfor %}
-</div>
-</div><!-- container // -->
+	</div><!-- container // -->
 </section>
 <!-- ========================= SECTION  END// ========================= -->
- <!-- ========================= SECTION TESTIMONIALS ========================= -->
+<!-- ========================= SECTION TESTIMONIALS ========================= -->
 <section class="padding-y bg">
 	<div class="container">
 		<header class="section-heading" style="text-align: center;">
 			<h2 class="section-title">Opiniones de algunos de nuestros clientes</h2>
 		</header>
-	
+
 		<div class="row">
 			<div class="col-md-4 mb-3">
 				<article class="card">
@@ -93,7 +92,8 @@
 								<small class="text-muted">Compradora Entusiasta</small>
 							</div>
 						</div>
-						<p>Los precios son competitivos y la variedad de productos es impresionante. ¡Muy recomendado!</p>
+						<p>Los precios son competitivos y la variedad de productos es impresionante. ¡Muy recomendado!
+						</p>
 					</div>
 				</article>
 			</div>
@@ -102,6 +102,6 @@
 </section>
 <!-- ========================= SECTION TESTIMONIALS END// ========================= -->
 </body>
-</html>
 
+</html>
 {% endblock %}
