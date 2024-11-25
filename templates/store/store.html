@@ -5,116 +5,80 @@
 <section class="section-pagetop bg">
   <div class="container">
     <h2 class="title-page">Encuentra los mejores productos</h2>
-
   </div> <!-- container //  -->
 </section>
 <!-- ========================= SECTION INTRO END// ========================= -->
 
 <!-- ========================= SECTION CONTENT ========================= -->
-<section class="section-content padding-y">
+<section class="section-name padding-y-sm bg-light">
   <div class="container">
 
+    <header class="border-bottom mb-4 pb-3">
+      <div class="form-inline">
+        <span class="mr-md-auto"><b>{{ product_count }}</b> Productos Encontrados </span>
+      </div>
+    </header><!-- sect-heading -->
+
     <div class="row">
-      <aside class="col-md-3">
+      {% if products %}
+      {% for product in products %}
+      <div class="col-md-4">
+        <figure class="card card-product-grid">
+          <div class="img-wrap">
 
-        <div class="card">
-          <article class="filter-group">
-            <header class="card-header">
-              <a href="#" data-toggle="collapse" data-target="#collapse_1" aria-expanded="true" style="color: #56b280">
-                <i class="icon-control fa fa-chevron-down"></i>
-                <h6 class="title" style="color:#56b280">Categorias</h6>
-              </a>
-            </header>
-            <div class="filter-content collapse show" id="collapse_1" style="">
-              <div class="card-body">
 
-                <ul class="list-menu">
-                  <li><a href="{% url 'store' %}">Mostrar Todos</a></li>
-                  {% for category in links %}
-                  <li><a href="{{ category.get_url }}">{{ category.category_name}}</a></li>
-                  {% endfor %}
-                </ul>
+            <a href="{{ product.get_url }}"><img src="{{ product.images.url }}"></a>
 
-              </div> <!-- card-body.// -->
+          </div> <!-- img-wrap.// -->
+          <figcaption class="info-wrap">
+            <div class="fix-height">
+              <a href="{{ product.get_url }}" class="title">{{product.product_name}}</a>
+              <div class="price-wrap mt-2">
+                <span class="price">{{ product.price }}</span>
+              </div> <!-- price-wrap.// -->
             </div>
-          </article> <!-- filter-group  .// -->
+            <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-success">Agregar al Carrito </a>
+          </figcaption>
+        </figure>
+      </div> <!-- col.// -->
+      {% endfor %}
+      {% else %}
+      <div style="text-align: center; color: darkgray; font-size: small;">
+        <h2>No se han encontrado resultados para tu búsqueda</h2>
+      </div>
+      {% endif %}
 
-        </div> <!-- card.// -->
-
-      </aside> <!-- col.// -->
-      <main class="col-md-9">
-
-        <header class="border-bottom mb-4 pb-3">
-          <div class="form-inline">
-            <span class="mr-md-auto"><b>{{ product_count }}</b> Productos Encontrados </span>
-
-          </div>
-        </header><!-- sect-heading -->
-
-        <div class="row">
-          {% if products %}
-          {% for product in products %}
-          <div class="col-md-4">
-            <figure class="card card-product-grid">
-              <div class="img-wrap">
+    </div> <!-- row end.// -->
 
 
-                <a href="{{ product.get_url }}"><img src="{{ product.images.url }}"></a>
+    <nav class="mt-4" aria-label="Page navigation sample">
 
-              </div> <!-- img-wrap.// -->
-              <figcaption class="info-wrap">
-                <div class="fix-height">
-                  <a href="{{ product.get_url }}" class="title">{{product.product_name}}</a>
-                  <div class="price-wrap mt-2">
-                    <span class="price">{{ product.price }}</span>
-                  </div> <!-- price-wrap.// -->
-                </div>
-                <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-success">Agregar al Carrito </a>
-              </figcaption>
-            </figure>
-          </div> <!-- col.// -->
-          {% endfor %}
-          {% else %}
-          <div style="text-align: center; color: darkgray; font-size: small;">
-            <h2>No se han encontrado resultados para tu búsqueda</h2>
-          </div>
-          {% endif %}
+      {% if products.has_other_pages %}
+      <ul class="pagination">
+        {% if products.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ products.previous_page_number }}">Anterior</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#">Anterior</a></li>
+        {% endif %}
 
-        </div> <!-- row end.// -->
+        {% for i in products.paginator.page_range %}
+        {% if products.number == i %}
+        <li class="page-item active"><a class="page-link" href="#">{{i}}</a></li>
+        {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+        {% endif %}
+        {% endfor %}
 
+        {% if products.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{products.next_page_number}}">Siguiente</a></li>
+        {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#">Siguiente</a></li>
+        {% endif %}
+      </ul>
+      {% endif %}
 
-        <nav class="mt-4" aria-label="Page navigation sample">
-
-          {% if products.has_other_pages %}
-          <ul class="pagination">
-            {% if products.has_previous %}
-            <li class="page-item"><a class="page-link" href="?page={{ products.previous_page_number }}">Anterior</a>
-            </li>
-            {% else %}
-            <li class="page-item disabled"><a class="page-link" href="#">Anterior</a></li>
-            {% endif %}
-
-            {% for i in products.paginator.page_range %}
-            {% if products.number == i %}
-            <li class="page-item active"><a class="page-link" href="#">{{i}}</a></li>
-            {% else %}
-            <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
-            {% endif %}
-            {% endfor %}
-
-            {% if products.has_next %}
-            <li class="page-item"><a class="page-link" href="?page={{products.next_page_number}}">Siguiente</a></li>
-            {% else %}
-            <li class="page-item disabled"><a class="page-link" href="#">Siguiente</a></li>
-            {% endif %}
-          </ul>
-          {% endif %}
-
-        </nav>
-
-      </main> <!-- col.// -->
-
-    </div>
+    </nav>
 
   </div> <!-- container .//  -->
 </section>
