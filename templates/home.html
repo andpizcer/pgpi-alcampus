@@ -13,12 +13,41 @@
 	</div> <!-- container //  -->
 </section>
 <!-- ========================= SECTION MAIN END// ========================= -->
+<!-- ========================= SECCIÓN DE DEPARTAMENTOS ========================= -->
+<section class="section-departments padding-y-sm bg-light">
+	<div class="container">
+		<header class="section-heading">
+			<h3 class="section-title">Explora nuestros Departamentos</h3>
+		</header>
+
+		<div class="row gx-1">
+			{% for category in links %}
+			<div class="col-md-4 mb-4">
+				<div class="card h-100 shadow-sm" style="width: 300px;">
+					<img src="" class="card-img-top">
+					<div class="card-body">
+						<h5 class="card-title"><a href="{{ category.get_url }}">{{ category.category_name}}</a></h5>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+			<div class="col-md-4 mb-4">
+				<div class="card h-100 shadow-sm" style="width: 300px;">
+					<img src="" class="card-img-top">
+					<div class="card-body">
+						<h5 class="card-title"><a href="{% url 'store' %}">Ver todo</a></h5>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<!-- ========================= SECCIÓN DE DEPARTAMENTOS END// ========================= -->
 <!-- ========================= SECTION  ========================= -->
-<section class="section-name padding-y-sm">
+<section class="section-name padding-y-sm bg">
 	<div class="container">
 
 		<header class="section-heading">
-			<a href="{% url 'store' %}" class="btn btn-outline-primary float-right">Ver Todo</a>
 			<h3 class="section-title">Los más vendidos</h3>
 		</header><!-- sect-heading -->
 
@@ -41,7 +70,7 @@
 </section>
 <!-- ========================= SECTION  END// ========================= -->
 <!-- ========================= SECTION TESTIMONIALS ========================= -->
-<section class="padding-y bg">
+<section class="section-name padding-y-sm">
 	<div class="container">
 		<header class="section-heading" style="text-align: center;">
 			<h2 class="section-title">Opiniones de algunos de nuestros clientes</h2>
