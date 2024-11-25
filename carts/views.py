@@ -199,22 +199,29 @@ def cart(request, total=0, quantity=0, cart_items=None):
     return render(request, 'store/cart.html', context)
 
 
-@login_required(login_url='login')
 def checkout(request, total=0, quantity=0, cart_items=None):
     tax = 0
     grand_total = 0
 
     try:
+        # Obtener los elementos del carrito (independientemente del estado de autenticación)
         if request.user.is_authenticated:
             cart_items = CartItem.objects.filter(user=request.user, is_active=True)
         else:
             cart = Cart.objects.get(cart_id=_cart_id(request))
             cart_items = CartItem.objects.filter(cart=cart, is_active=True)
 
+        # Calcular el total y la cantidad de productos en el carrito
         for cart_item in cart_items:
             total += (cart_item.product.price * cart_item.quantity)
             quantity += cart_item.quantity
-        tax = round((16/100) * total, 2)
+
+        # Si el usuario tiene 3 o más productos, forzar autenticación
+        if quantity > 3 and not request.user.is_authenticated:
+            return redirect('login')
+
+        # Calcular impuestos y total general
+        tax = round((16 / 100) * total, 2)
         grand_total = total + tax
 
     except ObjectDoesNotExist:
@@ -227,6 +234,5 @@ def checkout(request, total=0, quantity=0, cart_items=None):
         'tax': tax,
         'grand_total': grand_total,
     }
-
 
     return render(request, 'store/checkout.html', context)
