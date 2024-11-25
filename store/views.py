@@ -8,9 +8,22 @@ from django.db.models import Q
 from .forms import ReviewForm
 from django.contrib import messages
 from orders.models import OrderProduct
+from django.shortcuts import render
+from .models import Product
+from django.contrib.auth.decorators import login_required, user_passes_test
+
 
 
 # Create your views here.
+def is_admin(user):
+    return user.is_staff
+
+@login_required
+@user_passes_test(is_admin)
+def admin_dashboard(request):
+    # Código para el dashboard del administrador
+    return render(request, 'admin_dashboard.html')
+
 def store(request, category_slug=None):
     categories = None
     products = None
@@ -106,3 +119,27 @@ def submit_review(request, product_id):
                 data.save()
                 messages.success(request, 'Muchas gracias!, tu comentario ha sido publicado.')
                 return redirect(url)
+            
+def product_list(request):
+    products = Product.objects.all()
+    
+    # Filtrado
+    category = request.GET.get('category')
+    if category:
+        products = products.filter(category__name=category)
+
+    price_min = request.GET.get('price_min')
+    price_max = request.GET.get('price_max')
+    if price_min and price_max:
+        products = products.filter(price__gte=price_min, price__lte=price_max)
+
+    brand = request.GET.get('brand')
+    if brand:
+        products = products.filter(brand__iexact=brand)
+    
+    energy_rating = request.GET.get('energy_rating')
+    if energy_rating:
+        products = products.filter(energy_rating=energy_rating)
+
+    return render(request, 'store/product_list.html', {'products': products})
+
