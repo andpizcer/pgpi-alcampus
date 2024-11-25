@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from carts.models import CartItem
+from carts.models import CartItem, Product
 from .forms import OrderForm
 import datetime
 from .models import Order, Payment, OrderProduct
@@ -8,6 +8,9 @@ import json
 from store.models import Product
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
 
 
 def payments(request):
@@ -72,95 +75,81 @@ def payments(request):
 
 
 # Create your views here.
-def place_order(request, total=0, quantity=0):
-    current_user = request.user
-    cart_items = CartItem.objects.filter(user=current_user)
-    cart_count = cart_items.count()
+# Vista para la creación de la orden
+def place_order(request):
+    # Verifica si el carrito tiene productos
+    if not request.session.get('cart_items'):
+        messages.error(request, "No hay productos en tu carrito.")
+        return redirect('cart')  # Redirige al carrito si no hay productos
 
-    if cart_count <= 0:
-        return redirect('store')
+    # Procesar el formulario de dirección de envío
+    if request.method == "POST":
+        # Recoge la información del formulario
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        address_line_1 = request.POST.get('address_line_1')
+        address_line_2 = request.POST.get('address_line_2')
+        country = request.POST.get('country')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        order_note = request.POST.get('order_note')
 
-    grand_total = 0
-    tax = 0
+        # Obtener los productos del carrito (asegurándose que haya datos)
+        cart_items = json.loads(request.POST.get('cart_items'))
+        if not cart_items:
+            messages.error(request, "No se han encontrado productos en el carrito.")
+            return redirect('cart')
 
-    for cart_item in cart_items:
-        total += (cart_item.product.price * cart_item.quantity)
-        quantity += cart_item.quantity
+        # Crear la orden
+        order = Order.objects.create(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            phone=phone,
+            address_line_1=address_line_1,
+            address_line_2=address_line_2,
+            country=country,
+            city=city,
+            state=state,
+            order_note=order_note,
+            status='pending',  # Puedes cambiar el estado según tu flujo
+        )
 
-    tax = round((16/100) * total, 2)
-    grand_total = total + tax
+        # Crear los detalles de la orden (productos)
+        total = 0
+        for item in cart_items:
+            product = Product.objects.get(id=item['product_id'])
+            quantity = item['quantity']
+            sub_total = product.price * quantity
+            total += sub_total
 
+            CartItem.objects.create(
+                order=order,
+                product=product,
+                quantity=quantity,
+                price=product.price,
+                sub_total=sub_total,
+            )
 
-    if request.method == 'POST':
-        form = OrderForm(request.POST)
+        # Aquí puedes calcular impuestos y otros costos
+        tax = total * 0.16  # 16% de IVA (puedes modificar este valor según tus necesidades)
+        grand_total = total + tax
 
-        if form.is_valid():
-            data = Order()
-            data.user = current_user
-            data.first_name = form.cleaned_data['first_name']
-            data.last_name = form.cleaned_data['last_name']
-            data.phone = form.cleaned_data['phone']
-            data.email = form.cleaned_data['email']
-            data.address_line_1 = form.cleaned_data['address_line_1']
-            data.address_line_2 = form.cleaned_data['address_line_2']
-            data.country = form.cleaned_data['country']
-            data.city = form.cleaned_data['city']
-            data.state = form.cleaned_data['state']
-            data.order_note = form.cleaned_data['order_note']
-            data.order_total = grand_total
-            data.tax = tax
-            data.ip = request.META.get('REMOTE_ADDR')
-            data.save()
+        # Actualiza el total de la orden con los impuestos
+        order.total = total
+        order.tax = tax
+        order.grand_total = grand_total
+        order.save()
 
-            yr=int(datetime.date.today().strftime('%Y'))
-            mt=int(datetime.date.today().strftime('%m'))
-            dt=int(datetime.date.today().strftime('%d'))
-            d = datetime.date(yr,mt,dt)
-            current_date = d.strftime("%Y%m%d")
-            order_number = current_date + str(data.id)
-            data.order_number = order_number
-            data.save()
+        # Eliminar los productos del carrito después de crear la orden
+        del request.session['cart_items']
 
-            order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
-            context = {
-                'order': order,
-                'cart_items': cart_items,
-                'total': total,
-                'tax': tax,
-                'grand_total': grand_total,
-            }
+        # Redirigir a la página de confirmación de la orden
+        return redirect('order_complete', order_number=order.order_number)
 
-            return render(request, 'orders/payments.html', context)
-
-    else:
-        return redirect('checkout')
-
-
-
-def order_complete(request):
-    order_number = request.GET.get('order_number')
-    transID = request.GET.get('payment_id')
-
-    try:
-        order = Order.objects.get(order_number=order_number, is_ordered=True)
-        ordered_products = OrderProduct.objects.filter(order_id=order.id)
-
-        subtotal = 0
-        for i in ordered_products:
-            subtotal += i.product_price*i.quantity
-
-        payment = Payment.objects.get(payment_id=transID)
-
-        context = {
-            'order': order,
-            'ordered_products': ordered_products,
-            'order_number': order.order_number,
-            'transID': payment.payment_id,
-            'payment': payment,
-            'subtotal': subtotal,
-        }
-
-        return render(request, 'orders/order_complete.html', context)
-
-    except(Payment.DoesNotExist, Order.DoesNotExist):
-        return redirect('home')
+    # Si la petición es GET, simplemente mostrar el formulario
+    return render(request, 'place_order.html', {
+        'cart_items': request.session.get('cart_items', []),  # Obtiene los productos del carrito
+    })
