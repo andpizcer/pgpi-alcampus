@@ -37,7 +37,14 @@
                 <span class="price">{{ product.price }}</span>
               </div> <!-- price-wrap.// -->
             </div>
-            <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-success">Agregar al Carrito </a>
+            <div class="d-flex flex-column align-items-center mt-3">
+              {% if product.stock <= 0 %}
+                <h5 class="text-danger mb-3">Producto fuera de stock</h5>
+                <button class="btn btn-secondary btn-lg w-100" disabled>Agregar al Carrito</button>
+              {% else %}
+                <a href="{% url 'add_cart' product.id %}" class="btn btn-success btn-lg w-100">Agregar al Carrito</a>
+              {% endif %}
+            </div>
           </figcaption>
         </figure>
       </div> <!-- col.// -->

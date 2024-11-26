@@ -5,6 +5,14 @@
 <section class="section-content padding-y bg">
     <div class="container">
 
+    {% if messages %}
+      <div class="alert alert-danger text-center">
+        {% for message in messages %}
+            <p class="m-0">{{ message }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+
     <!-- ============================ COMPONENT 1 ================================= -->
     {% if not cart_items %}
       <h3 class="text-center">¡Parece que no has agregado nada aún! Añade productos de tu interés al carrito.</h3>
@@ -53,7 +61,7 @@
 
                                 <a href="{% url 'remove_cart' cart_item.product.id cart_item.id %}" class="btn btn-light" type="button" id="button-plus"> <i class="fa fa-minus"></i> </a>
                                 </div>
-                                <input type="text" class="form-control"  value="{{ cart_item.quantity }}">
+                                <span class="form-control text-center" style="background-color: white;">{{ cart_item.quantity }}</span>
                                 <div class="input-group-append">
 
                                   <form action="{% url 'add_cart' cart_item.product.id %}" method="post">
