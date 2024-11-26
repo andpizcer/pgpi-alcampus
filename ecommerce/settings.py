@@ -158,5 +158,5 @@ EMAIL_HOST = "smtp.sendgrid.net"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "apikey"  # Este es un valor fijo de SendGrid
-EMAIL_HOST_PASSWORD = "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"  # Tu clave de API generada
+EMAIL_HOST_PASSWORD = "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"  # Tu clave de API generada
 EMAIL_FROM = "gestor.alcampus@gmail.com"

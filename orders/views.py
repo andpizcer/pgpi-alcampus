@@ -8,16 +8,24 @@ import json
 from store.models import Product
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+from accounts.models import Account
 
 
 def payments(request):
     body = json.loads(request.body)
-    order = Order.objects.get(
-        user=request.user, is_ordered=False, order_number=body["orderID"]
-    )
+    if request.user.is_authenticated:
+        order = Order.objects.get(
+            user=request.user, is_ordered=False, order_number=body["orderID"]
+        )
+    else:
+        order = Order.objects.get(
+            user=Account.objects.get(username="anonymus"),
+            is_ordered=False,
+            order_number=body["orderID"],
+        )
 
     payment = Payment(
-        user=request.user,
+        user=order.user,
         payment_id=body["transID"],
         payment_method=body["payment_method"],
         amount_id=order.order_total,
@@ -29,13 +37,13 @@ def payments(request):
     order.is_ordered = True
     order.save()
 
-    cart_items = CartItem.objects.filter(user=request.user)
+    cart_items = CartItem.objects.filter(user=order.user)
 
     for item in cart_items:
         orderproduct = OrderProduct()
         orderproduct.order_id = order.id
         orderproduct.payment = payment
-        orderproduct.user_id = request.user.id
+        orderproduct.user_id = order.user.id
         orderproduct.product_id = item.product_id
         orderproduct.quantity = item.quantity
         orderproduct.product_price = item.product.price
@@ -52,7 +60,7 @@ def payments(request):
         product.stock -= item.quantity
         product.save()
 
-    CartItem.objects.filter(user=request.user).delete()
+    CartItem.objects.filter(user=order.user).delete()
 
     ordered_products = OrderProduct.objects.filter(order_id=order.id)
 
@@ -69,7 +77,7 @@ def payments(request):
         },
     )
 
-    to_email = request.user.email
+    to_email = order.email
     send_email = EmailMessage(
         mail_subject, body, to=[to_email], from_email="gestor.alcampus@gmail.com"
     )
@@ -91,6 +99,8 @@ def _cart_id(request):
         cart = request.session.create()
     return cart
 
+
+# Create your views here.
 def place_order(request, total=0, quantity=0):
     if request.user.is_authenticated:
         current_user = request.user
@@ -128,7 +138,9 @@ def place_order(request, total=0, quantity=0):
             if request.user.is_authenticated:
                 data.user = current_user
             else:
-                data.user = None  # Usuario no registrado
+                data.user = Account.objects.get(
+                    username="anonymus"
+                )  # Usuario no registrado
             data.first_name = form.cleaned_data["first_name"]
             data.last_name = form.cleaned_data["last_name"]
             data.phone = form.cleaned_data["phone"]
@@ -167,7 +179,6 @@ def place_order(request, total=0, quantity=0):
 
     else:
         return redirect("checkout")
-
 
 
 def order_complete(request):
