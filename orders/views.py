@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
-from carts.models import CartItem
+from carts.models import CartItem, Cart
 from .forms import OrderForm
 import datetime
 from .models import Order, Payment, OrderProduct
@@ -8,16 +8,24 @@ import json
 from store.models import Product
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+from accounts.models import Account
 
 
 def payments(request):
     body = json.loads(request.body)
-    order = Order.objects.get(
-        user=request.user, is_ordered=False, order_number=body["orderID"]
-    )
+    if request.user.is_authenticated:
+        order = Order.objects.get(
+            user=request.user, is_ordered=False, order_number=body["orderID"]
+        )
+    else:
+        order = Order.objects.get(
+            user=Account.objects.get(username="anonymus"),
+            is_ordered=False,
+            order_number=body["orderID"],
+        )
 
     payment = Payment(
-        user=request.user,
+        user=order.user,
         payment_id=body["transID"],
         payment_method=body["payment_method"],
         amount_id=order.order_total,
@@ -29,13 +37,13 @@ def payments(request):
     order.is_ordered = True
     order.save()
 
-    cart_items = CartItem.objects.filter(user=request.user)
+    cart_items = CartItem.objects.filter(user=order.user)
 
     for item in cart_items:
         orderproduct = OrderProduct()
         orderproduct.order_id = order.id
         orderproduct.payment = payment
-        orderproduct.user_id = request.user.id
+        orderproduct.user_id = order.user.id
         orderproduct.product_id = item.product_id
         orderproduct.quantity = item.quantity
         orderproduct.product_price = item.product.price
@@ -52,7 +60,7 @@ def payments(request):
         product.stock -= item.quantity
         product.save()
 
-    CartItem.objects.filter(user=request.user).delete()
+    CartItem.objects.filter(user=order.user).delete()
 
     ordered_products = OrderProduct.objects.filter(order_id=order.id)
 
@@ -84,18 +92,32 @@ def payments(request):
     return JsonResponse(data)
 
 
+def _cart_id(request):
+    """Helper function to get the cart ID from the session."""
+    cart = request.session.session_key
+    if not cart:
+        cart = request.session.create()
+    return cart
+
+
 # Create your views here.
 def place_order(request, total=0, quantity=0):
-    current_user = request.user
-    cart_items = CartItem.objects.filter(user=current_user)
-    cart_count = cart_items.count()
+    if request.user.is_authenticated:
+        current_user = request.user
+        cart_items = CartItem.objects.filter(user=current_user, is_active=True)
+    else:
+        cart = Cart.objects.get(cart_id=_cart_id(request))
+        cart_items = CartItem.objects.filter(cart=cart, is_active=True)
 
+    # Verificar si hay artículos en el carrito
+    cart_count = cart_items.count()
     if cart_count <= 0:
         return redirect("store")
 
     grand_total = 0
     tax = 0
 
+    # Calcular el total y la cantidad
     for cart_item in cart_items:
         total += cart_item.product.price * cart_item.quantity
         quantity += cart_item.quantity
@@ -103,12 +125,22 @@ def place_order(request, total=0, quantity=0):
     tax = round((16 / 100) * total, 2)
     grand_total = total + tax
 
+    # Restringir usuarios no registrados si tienen 4 o más productos
+    if not request.user.is_authenticated and quantity >= 4:
+        return redirect("login")
+
     if request.method == "POST":
         form = OrderForm(request.POST)
 
         if form.is_valid():
+            # Crear una nueva orden
             data = Order()
-            data.user = current_user
+            if request.user.is_authenticated:
+                data.user = current_user
+            else:
+                data.user = Account.objects.get(
+                    username="anonymus"
+                )  # Usuario no registrado
             data.first_name = form.cleaned_data["first_name"]
             data.last_name = form.cleaned_data["last_name"]
             data.phone = form.cleaned_data["phone"]
@@ -124,6 +156,7 @@ def place_order(request, total=0, quantity=0):
             data.ip = request.META.get("REMOTE_ADDR")
             data.save()
 
+            # Generar número de orden único
             yr = int(datetime.date.today().strftime("%Y"))
             mt = int(datetime.date.today().strftime("%m"))
             dt = int(datetime.date.today().strftime("%d"))
@@ -133,11 +166,9 @@ def place_order(request, total=0, quantity=0):
             data.order_number = order_number
             data.save()
 
-            order = Order.objects.get(
-                user=current_user, is_ordered=False, order_number=order_number
-            )
+            # Contexto para la plantilla de pago
             context = {
-                "order": order,
+                "order": data,
                 "cart_items": cart_items,
                 "total": total,
                 "tax": tax,
