@@ -198,8 +198,6 @@ def cart(request, total=0, quantity=0, cart_items=None):
 
     return render(request, 'store/cart.html', context)
 
-
-@login_required(login_url='login')
 def checkout(request, total=0, quantity=0, cart_items=None):
     tax = 0
     grand_total = 0
@@ -214,8 +212,12 @@ def checkout(request, total=0, quantity=0, cart_items=None):
         for cart_item in cart_items:
             total += (cart_item.product.price * cart_item.quantity)
             quantity += cart_item.quantity
-        tax = round((16/100) * total, 2)
+        tax = round((16 / 100) * total, 2)
         grand_total = total + tax
+
+
+        if not request.user.is_authenticated and quantity >= 4:
+            return redirect('login')
 
     except ObjectDoesNotExist:
         pass
@@ -227,6 +229,5 @@ def checkout(request, total=0, quantity=0, cart_items=None):
         'tax': tax,
         'grand_total': grand_total,
     }
-
 
     return render(request, 'store/checkout.html', context)
