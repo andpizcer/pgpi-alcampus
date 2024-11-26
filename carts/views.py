@@ -3,7 +3,7 @@ from store.models import Product, Variation
 from .models import Cart, CartItem
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
-
+from django.contrib import messages
 
 # Create your views here.
 def _cart_id(request):
@@ -49,25 +49,35 @@ def add_cart(request, product_id):
                 index = ex_var_list.index(product_variation)
                 item_id = id[index]
                 item = CartItem.objects.get(product=product, id=item_id)
-                item.quantity += 1
-                item.save()
+                # Verificar stock disponible
+                if item.quantity < product.stock:
+                    item.quantity += 1
+                    item.save()
+                else:
+                    messages.error(request, f"No hay suficiente stock disponible para {product.product_name}.")
             else:
-                item = CartItem.objects.create(product=product, quantity=1, user=current_user)
-                if len(product_variation) > 0:
-                    item.variation.clear()
-                    item.variation.add(*product_variation)
-                item.save()
+                if product.stock > 0:
+                    item = CartItem.objects.create(product=product, quantity=1, user=current_user)
+                    if len(product_variation) > 0:
+                        item.variation.clear()
+                        item.variation.add(*product_variation)
+                    item.save()
+                else:
+                    messages.error(request, f"No hay suficiente stock disponible para {product.product_name}.")
 
-        else :
-            cart_item = CartItem.objects.create(
-                product = product,
-                quantity = 1,
-                user = current_user,
-            )
-            if len(product_variation) > 0:
-                cart_item.variation.clear()
-                cart_item.variation.add(*product_variation)
-            cart_item.save()
+        else:
+            if product.stock > 0:
+                cart_item = CartItem.objects.create(
+                    product=product,
+                    quantity=1,
+                    user=current_user,
+                )
+                if len(product_variation) > 0:
+                    cart_item.variation.clear()
+                    cart_item.variation.add(*product_variation)
+                cart_item.save()
+            else:
+                messages.error(request, f"No hay suficiente stock disponible para {product.product_name}.")
 
         return redirect('cart')
 
@@ -89,11 +99,9 @@ def add_cart(request, product_id):
             cart = Cart.objects.get(cart_id=_cart_id(request))
         except Cart.DoesNotExist:
             cart = Cart.objects.create(
-                cart_id = _cart_id(request)
+                cart_id=_cart_id(request)
             )
         cart.save()
-
-
 
         is_cart_item_exists = CartItem.objects.filter(product=product, cart=cart).exists()
         if is_cart_item_exists:
@@ -110,26 +118,34 @@ def add_cart(request, product_id):
                 index = ex_var_list.index(product_variation)
                 item_id = id[index]
                 item = CartItem.objects.get(product=product, id=item_id)
-                item.quantity += 1
-                item.save()
+                # Verificar stock disponible
+                if item.quantity < product.stock:
+                    item.quantity += 1
+                    item.save()
+                else:
+                    messages.error(request, f"No hay suficiente stock disponible para {product.product_name}.")
             else:
-                item = CartItem.objects.create(product=product, quantity=1, cart=cart)
-                if len(product_variation) > 0:
-                    item.variation.clear()
-                    item.variation.add(*product_variation)
-                item.save()
-
-        # Normal nota
+                if product.stock > 0:
+                    item = CartItem.objects.create(product=product, quantity=1, cart=cart)
+                    if len(product_variation) > 0:
+                        item.variation.clear()
+                        item.variation.add(*product_variation)
+                    item.save()
+                else:
+                    messages.error(request, f"No hay suficiente stock disponible para {product.product_name}.")
         else:
-            cart_item = CartItem.objects.create(
-                product = product,
-                quantity = 1,
-                cart = cart,
-            )
-            if len(product_variation) > 0:
-                cart_item.variation.clear()
-                cart_item.variation.add(*product_variation)
-            cart_item.save()
+            if product.stock > 0:
+                cart_item = CartItem.objects.create(
+                    product=product,
+                    quantity=1,
+                    cart=cart,
+                )
+                if len(product_variation) > 0:
+                    cart_item.variation.clear()
+                    cart_item.variation.add(*product_variation)
+                cart_item.save()
+            else:
+                messages.error(request, f"No hay suficiente stock disponible para {product.product_name}.")
 
         return redirect('cart')
 
