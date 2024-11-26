@@ -5,13 +5,14 @@
 <div class="container" style="margin-top: 50px;">
     <center><i class="fas fa-check-circle" style="font-size: 72px;margin-bottom: 20px;color: #28A745;"></i></center>
     <h2 class="text-center">El pago se realizó con exito</h2>
-	<br>
-	<div class="text-center">
-		<a href="{% url 'store' %}" class="btn btn-success">Seguir comprando</a>
-	</div>
+    <br>
+    <div class="text-center">
+        <a href="{% url 'store' %}" class="btn btn-success">Seguir comprando</a>
+    </div>
 </div>
 
-<div class="container" style="margin: 0 auto;width: 50%;padding: 50px;background: #f1f1f1;margin-top: 50px;margin-bottom: 50px;">
+<div class="container"
+    style="margin: 0 auto;width: 50%;padding: 50px;background: #f1f1f1;margin-top: 50px;margin-bottom: 50px;">
     <div class="row invoice row-printable">
         <div class="col-md-12">
             <!-- col-lg-12 start here -->
@@ -22,7 +23,7 @@
                         <!-- Start .row -->
                         <div class="col-lg-6">
                             <!-- col-lg-6 start here -->
-                            <div class="invoice-logo"><img src="{% static './images/bitito.png' %}" alt="Invoice logo" style="max-height: 40px;"></div>
+                            <div class="brand-wrap"><img src="{% static 'images/favicon.ico' %}" class="logo"></div>
                         </div>
                         <!-- col-lg-6 end here -->
                         <div class="col-lg-6">
@@ -66,14 +67,15 @@
                                             {% for item in ordered_products %}
                                             <tr>
                                                 <td>
-                                                  {{ item.product.product_name }}
-                                                  <p class="text-muted small">
-                                                    {% if item.variation.all %}
-                                                      {% for i in item.variation.all %}
-                                                        {{ i.variation_category | capfirst }} : {{ i.variation_value | capfirst }} <br>
-                                                      {% endfor %}
-                                                    {% endif %}
-                                                  </p>
+                                                    {{ item.product.product_name }}
+                                                    <p class="text-muted small">
+                                                        {% if item.variation.all %}
+                                                        {% for i in item.variation.all %}
+                                                        {{ i.variation_category | capfirst }} : {{ i.variation_value |
+                                                        capfirst }} <br>
+                                                        {% endfor %}
+                                                        {% endif %}
+                                                    </p>
                                                 </td>
                                                 <td class="text-center">{{ item.quantity }}</td>
                                                 <td class="text-center">{{ item.product_price }} USD</td>
@@ -111,6 +113,6 @@
         </div>
         <!-- col-lg-12 end here -->
     </div>
-    </div>
+</div>
 
 {% endblock %}

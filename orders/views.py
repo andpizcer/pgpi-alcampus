@@ -69,7 +69,7 @@ def payments(request):
         },
     )
 
-    to_email = request.user.email
+    to_email = order.email
     send_email = EmailMessage(
         mail_subject, body, to=[to_email], from_email="gestor.alcampus@gmail.com"
     )
