@@ -42,5 +42,13 @@
             </tr>
         </tfoot>
     </table>
+    <br>
+    <div style="text-align: center;">
+        <p style="text-align: center;">Puedes ver el seguimiento de tu pedido en el siguiente link:</p>
+        <button style="background-color: gray;"><a
+                href="http://127.0.0.1:8000/orders/tracing/{{order.order_number}}/">SEGUIMIENTO DE PEDIDO:
+                {{order.order_number}}</a></button>
+    </div>
+    <br>
     <p style="text-align: center;">Gracias por confiar en Alcampus. ¡Esperamos verte pronto!</p>
 </div>

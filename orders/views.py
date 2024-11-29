@@ -208,3 +208,23 @@ def order_complete(request):
 
     except (Payment.DoesNotExist, Order.DoesNotExist):
         return redirect("home")
+
+
+def tracing(request, order_number):
+    order = Order.objects.get(order_number=order_number)
+    try:
+        ordered_products = OrderProduct.objects.filter(order_id=order.id)
+        subtotal = 0
+        for i in ordered_products:
+            subtotal += i.product_price * i.quantity
+
+        context = {
+            "order": order,
+            "ordered_products": ordered_products,
+            "order_number": order.order_number,
+            "subtotal": subtotal,
+        }
+    except Exception as e:
+        raise e
+    context = {"order": order, "ordered_products": ordered_products}
+    return render(request, "orders/tracing.html", context)
