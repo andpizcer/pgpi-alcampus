@@ -9,7 +9,19 @@
 
 <div class="container"
     style="margin: 0 auto;width: 50%;padding: 50px;background: #f1f1f1;margin-top: 50px;margin-bottom: 50px;">
-    <h2 class="text-center" style="color: #28A745;">Estado del pedido: {{order.status}}</h2>
+    {% if order.status == 'New' %}
+    <h2 class="text-center">Estado del pedido:</h2>
+    <h2 style="color: darkgoldenrod;" class="text-center">EN PREPARACIÓN</h2>
+    {% elif order.status == 'Accepted' %}
+    <h2 class="text-center">Estado del pedido:</h2>
+    <h2 style="color: cadetblue;" class="text-center">EN CAMINO</h2>
+    {% elif order.status == 'Completed' %}
+    <h2 class="text-center">Estado del pedido:</h2>
+    <h2 style="color: green;" class="text-center">ENTREGADO</h2>
+    {% else %}
+    <h2 class="text-center">Estado del pedido:</h2>
+    <h2 style="color: darkgoldenrod;" class="text-center">EN PREPARACIÓN</h2>
+    {% endif %}
     <br>
     <div class="row invoice row-printable">
         <div class="col-md-12">
