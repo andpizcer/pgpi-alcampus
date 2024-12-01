@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', default='safdfssdffsdfssdff')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = 'RENDER' not in os.environ
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
@@ -141,7 +141,6 @@ STATICFILES_DIRS = ["ecommerce/static"]
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
-
 
 from django.contrib.messages import constants as messages
 
