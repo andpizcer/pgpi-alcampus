@@ -105,7 +105,7 @@ if 'DB_HOST' in os.environ:
             'HOST': os.getenv('DB_HOST', 'localhost'),
             'PORT': os.getenv('DB_PORT', '5432'),
             'OPTIONS': {
-                'options': os.getenv('DB_OPTIONS', '-c search_path=public'),
+                'options': '-c search_path=public, alcampus_countsitbe'
             },
         }
     }
