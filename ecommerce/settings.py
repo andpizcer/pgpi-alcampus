@@ -97,7 +97,12 @@ AUTH_USER_MODEL = "accounts.Account"
 
 if 'DATABASE_URL' in os.environ:
     DATABASES = {
-        'default': dj_database_url.config(default=os.environ['DATABASE_URL']),
+        'default': dj_database_url.config(
+            default=os.environ['DATABASE_URL'],
+        ),
+    }
+    DATABASES['default']['OPTIONS'] = {
+        'options': '-c search_path=alcampus_countsitbe,public'
     }
 else:
     DATABASES = {
