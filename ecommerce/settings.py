@@ -97,7 +97,17 @@ AUTH_USER_MODEL = "accounts.Account"
 
 if 'DATABASE_URL' in os.environ:
     DATABASES = {
-        'default': dj_database_url.config(default=os.environ['DATABASE_URL'])
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('DB_NAME', 'default_db_name'),
+            'USER': os.getenv('DB_USER', 'default_user'),
+            'PASSWORD': os.getenv('DB_PASSWORD', 'default_password'),
+            'HOST': os.getenv('DB_HOST', 'localhost'),
+            'PORT': os.getenv('DB_PORT', '5432'),
+            'OPTIONS': {
+                'options': os.getenv('DB_OPTIONS', '-c search_path=public'),
+            },
+        }
     }
 else:
     DATABASES = {
