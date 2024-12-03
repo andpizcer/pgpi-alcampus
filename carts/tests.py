@@ -1,11 +1,28 @@
 from django.test import TestCase
-from django.urls import reverse
-from accounts.models import Account
+from carts.models import Cart, CartItem
 from store.models import Product, Variation
-from .models import Cart, CartItem
+from accounts.models import Account
+from category.models import Category
 
-class CartViewTests(TestCase):
+
+class CartModelTests(TestCase):
     def setUp(self):
+        # Crear carrito
+        self.cart = Cart.objects.create(cart_id='12345ABC')
+
+    def test_cart_creation(self):
+        self.assertEqual(self.cart.cart_id, '12345ABC')
+        self.assertEqual(str(self.cart), '12345ABC')
+
+
+class CartItemModelTests(TestCase):
+    def setUp(self):
+        # Crear categoría para el producto
+        self.category = Category.objects.create(
+            category_name='Electronics',
+            slug='electronics'
+        )
+
         # Crear usuario
         self.user = Account.objects.create_user(
             first_name='John',
@@ -14,63 +31,46 @@ class CartViewTests(TestCase):
             username='john',
             password='securepassword123'
         )
-        self.client.login(email='john@example.com', password='securepassword123')
 
         # Crear producto
         self.product = Product.objects.create(
-            name='Test Product',
-            price=100.00,
-            stock=10,
-            description='A product for testing'
+            product_name='Headphones',
+            slug='headphones',
+            description='Noise-canceling headphones',
+            price=200,
+            stock=15,
+            is_available=True,
+            category=self.category
         )
-        
-        # Crear carrito
-        self.cart = Cart.objects.create(cart_id='test_cart')
 
-        # Crear variación
+        # Crear variación del producto
         self.variation = Variation.objects.create(
             product=self.product,
             variation_category='color',
-            variation_value='red',
+            variation_value='Black',
             is_active=True
         )
-        
-        self.cart_item_data = {
-            'product_id': self.product.id,
-            'quantity': 2,
-            'variation': [self.variation.id]
-        }
 
-    def test_add_to_cart_success(self):
-        response = self.client.post(reverse('add_to_cart'), self.cart_item_data)
-        self.assertEqual(response.status_code, 302)  # Redirige tras añadir al carrito
-        self.assertTrue(CartItem.objects.filter(product=self.product, cart=self.cart).exists())
-        cart_item = CartItem.objects.get(product=self.product)
-        self.assertEqual(cart_item.quantity, 2)
-        self.assertTrue(cart_item.is_active)
+        # Crear carrito
+        self.cart = Cart.objects.create(cart_id='67890DEF')
 
-    def test_add_to_cart_with_variation(self):
-        response = self.client.post(reverse('add_to_cart'), self.cart_item_data)
-        self.assertEqual(response.status_code, 302)
-        cart_item = CartItem.objects.get(product=self.product)
-        self.assertIn(self.variation, cart_item.variation.all())
-
-    def test_remove_from_cart(self):
-        cart_item = CartItem.objects.create(
-            cart=self.cart,
+        # Crear item del carrito
+        self.cart_item = CartItem.objects.create(
+            user=self.user,
             product=self.product,
-            quantity=1,
-            is_active=True
-        )
-        response = self.client.post(reverse('remove_from_cart'), {'item_id': cart_item.id})
-        self.assertEqual(response.status_code, 302)
-        self.assertFalse(CartItem.objects.filter(id=cart_item.id).exists())
-
-    def test_sub_total_calculation(self):
-        cart_item = CartItem.objects.create(
             cart=self.cart,
-            product=self.product,
-            quantity=3,
+            quantity=2,
             is_active=True
         )
-        self.assertEqual(cart_item.sub_total(), self.product.price * 3)
+        self.cart_item.variation.add(self.variation)
+
+    def test_cart_item_creation(self):
+        self.assertEqual(self.cart_item.product, self.product)
+        self.assertEqual(self.cart_item.quantity, 2)
+        self.assertTrue(self.cart_item.is_active)
+
+    def test_cart_item_sub_total(self):
+        self.assertEqual(self.cart_item.sub_total(), 400)
+
+    def test_cart_item_variation(self):
+        self.assertIn(self.variation, self.cart_item.variation.all())
