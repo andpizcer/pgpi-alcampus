@@ -4,10 +4,8 @@ from accounts.models import Account
 
 class ProductModelTests(TestCase):
     def setUp(self):
-        # Crear categoría
         self.category = Category.objects.create(category_name='Grandes electrodomésticos', slug='grandes-electrodomesticos')
 
-        # Crear producto
         self.product = Product.objects.create(
             product_name='Frigorífico',
             slug='frigorifico',
@@ -24,5 +22,4 @@ class ProductModelTests(TestCase):
         self.assertTrue(self.product.is_available)
 
     def test_product_get_url(self):
-        # Ajustar la URL esperada para que coincida con el formato actual
         self.assertEqual(self.product.get_url(), '/store/category/grandes-electrodomesticos/frigorifico/')

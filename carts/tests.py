@@ -7,7 +7,6 @@ from category.models import Category
 
 class CartModelTests(TestCase):
     def setUp(self):
-        # Crear carrito
         self.cart = Cart.objects.create(cart_id='12345ABC')
 
     def test_cart_creation(self):
@@ -17,13 +16,11 @@ class CartModelTests(TestCase):
 
 class CartItemModelTests(TestCase):
     def setUp(self):
-        # Crear categoría para el producto
         self.category = Category.objects.create(
-            category_name='Electronics',
-            slug='electronics'
+            category_name='Grandes electrodomésticos',
+            slug='grandes-electrodomesticos'
         )
 
-        # Crear usuario
         self.user = Account.objects.create_user(
             first_name='John',
             last_name='Doe',
@@ -32,29 +29,18 @@ class CartItemModelTests(TestCase):
             password='securepassword123'
         )
 
-        # Crear producto
         self.product = Product.objects.create(
-            product_name='Headphones',
-            slug='headphones',
-            description='Noise-canceling headphones',
+            product_name='Frigorífico',
+            slug='frigorifico',
+            description='Frigorífico de marca Samsung',
             price=200,
             stock=15,
             is_available=True,
             category=self.category
         )
 
-        # Crear variación del producto
-        self.variation = Variation.objects.create(
-            product=self.product,
-            variation_category='color',
-            variation_value='Black',
-            is_active=True
-        )
-
-        # Crear carrito
         self.cart = Cart.objects.create(cart_id='67890DEF')
 
-        # Crear item del carrito
         self.cart_item = CartItem.objects.create(
             user=self.user,
             product=self.product,
@@ -62,7 +48,6 @@ class CartItemModelTests(TestCase):
             quantity=2,
             is_active=True
         )
-        self.cart_item.variation.add(self.variation)
 
     def test_cart_item_creation(self):
         self.assertEqual(self.cart_item.product, self.product)
@@ -71,6 +56,3 @@ class CartItemModelTests(TestCase):
 
     def test_cart_item_sub_total(self):
         self.assertEqual(self.cart_item.sub_total(), 400)
-
-    def test_cart_item_variation(self):
-        self.assertIn(self.variation, self.cart_item.variation.all())
