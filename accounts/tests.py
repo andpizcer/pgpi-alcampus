@@ -20,15 +20,15 @@ class AccountViewTests(TestCase):
 
     def test_register_user_success(self):
         response = self.client.post(reverse('register'), self.valid_user_data)
-        self.assertEqual(response.status_code, 302)  # Redirige tras registro
+        self.assertEqual(response.status_code, 302)
         self.assertTrue(Account.objects.filter(email='john@example.com').exists())
         user = Account.objects.get(email='john@example.com')
         self.assertEqual(user.first_name, 'John')
-        self.assertEqual(user.is_active, False)  # La cuenta no está activa aún
+        self.assertEqual(user.is_active, False) 
 
     def test_register_user_missing_field(self):
         invalid_user_data = self.valid_user_data.copy()
-        invalid_user_data.pop('email')  # Quitamos el email
+        invalid_user_data.pop('email')
         response = self.client.post(reverse('register'), invalid_user_data)
         self.assertEqual(response.status_code, 200)
         self.assertFalse(Account.objects.filter(first_name='John').exists())
