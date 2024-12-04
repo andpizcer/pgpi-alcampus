@@ -57,6 +57,45 @@
 
 ---
 
+## Configuración de la Aplicación
+
+### **Inicio de Sesión**
+Una vez que la aplicación esté desplegada, puedes iniciar sesión utilizando las siguientes credenciales predeterminadas:  
+- **Correo electrónico**: `client1@gmail.com`  
+- **Contraseña**: `electrodomestico`
+
+Asegúrate de cambiar estas credenciales si es necesario para entornos de producción.
+
+---
+
+## Realización de Pagos
+
+Para realizar pagos en los pedidos dentro de la aplicación, es necesario usar una **cuenta de sandbox** o una **tarjeta de prueba**. Estas herramientas permiten simular transacciones sin utilizar información real, lo cual es ideal para entornos de desarrollo y pruebas.
+
+### **Tarjeta de Prueba Recomendable**
+Puedes usar la siguiente tarjeta de prueba para realizar los pagos en la aplicación:
+
+- **Número de Tarjeta**: `4032033601520898`  
+- **Fecha de Expiración**: `08/2028`  
+- **CVC**: `007`
+
+### **Pasos para Realizar un Pago**
+1. Durante el proceso de compra, selecciona la opción de realizar un pago.
+2. Ingresa los datos de la tarjeta proporcionados arriba.
+3. Confirma el pago.  
+   > **Nota**: No se realizará ninguna transacción real. Este proceso es únicamente para probar la funcionalidad de la aplicación.
+
+---
+
+## Opción Alternativa: Despliegue en Línea
+
+Si no deseas realizar el despliegue localmente, la aplicación ya está disponible en línea en el siguiente enlace:  
+[Aplicación Desplegada en Render](https://pgpi-alcampus.onrender.com)
+
+Simplemente abre el enlace en tu navegador para acceder directamente a la aplicación.
+
+---
+
 ## Solución de Problemas
 1. **Comando `docker` no encontrado**:  
    Verifica que Docker está instalado y en tu variable de entorno `PATH`.
@@ -76,4 +115,4 @@
 
 ---
 
-Con este manual, deberías poder desplegar y ejecutar la aplicación correctamente en tu entorno local utilizando Docker.
+Con este manual, deberías poder desplegar y ejecutar la aplicación correctamente en tu entorno local o acceder a la versión en línea ya desplegada. Además, puedes probar las funcionalidades de pagos utilizando la tarjeta de prueba proporcionada.
