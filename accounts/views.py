@@ -27,6 +27,11 @@ def register(request):
             email = form.cleaned_data["email"]
             password = form.cleaned_data["password"]
             username = email.split("@")[0]  # FALTA PHONE NUMBEEEEEEEEEEEEEEEER
+            counter = 1
+            while Account.objects.filter(username=username).exists():
+                username = username + str(counter)
+                counter += 1
+                print(username)
             user = Account.objects.create_user(
                 first_name=first_name,
                 last_name=last_name,
